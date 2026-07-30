@@ -2,7 +2,7 @@ import { Character } from "../models/character";
 
 export const characters: Character[] = [
 {
-    id: 0,
+    id: "0",
     name: 'Alucard',
     race: 'Eladrin',
     class: 'Warlock',
@@ -10,7 +10,7 @@ export const characters: Character[] = [
     hp: 49
     },
     {
-    id: 1,
+    id: "1",
     name: 'Serafim',
     race: 'Human',
     class: 'Monk',
@@ -18,7 +18,7 @@ export const characters: Character[] = [
     hp: 37
     },
     {
-    id: 2,
+    id: "2",
     name: 'Lucian fon Reimar',
     race: 'Human',
     class: 'Bard',
@@ -26,7 +26,7 @@ export const characters: Character[] = [
     hp: 29
     },
     {
-    id: 3,
+    id: "3",
     name: 'Sir Avrelian',
     race: 'Harengon',
     class: 'Paladin',
@@ -34,7 +34,7 @@ export const characters: Character[] = [
     hp: 56
     },
     {
-    id: 4,
+    id: "4",
     name: 'Yoren',
     race: 'Human',
     class: 'Paladin',
