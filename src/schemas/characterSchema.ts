@@ -1,8 +1,12 @@
-import { z } from 'zod';
-export const UpdateCharacterSchema = z.object({
-        name: z.string().optional(),
-        race: z.string().optional(),
-        class: z.string().optional(),
-        level: z.number().optional(),
-        hp: z.number().optional(),
-    });
+import { z } from "zod";
+
+export const CharacterSchema = z.object({
+        name: z.string(),
+        race: z.string(),
+        class: z.string(),
+        level: z.number(),
+        hp: z.number(),
+});
+
+export const UpdateCharacterSchema =
+    CharacterSchema.partial();
