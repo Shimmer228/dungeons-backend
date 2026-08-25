@@ -26,22 +26,23 @@ export const getCharacters = (
         level !== undefined
             ? Number(level)
             : undefined;
+    if(parsedLevel !==undefined && Number.isNaN(parsedLevel)) return res.status(400).json({"message":"level must be a number"});
+    const result = CharacterService.getAll({
+            class: characterClass
+                ? String(characterClass)
+                : undefined,
 
-    const result = CharacterService.getAll(
-        characterClass
-            ? String(characterClass)
-            : undefined,
-
-        race
+            race:race
             ? String(race)
             : undefined,
 
-        parsedLevel,
+        level: parsedLevel,
 
-        sort
+        sort: sort
             ? String(sort)
             : undefined
-    );
+
+});
 
     return res.status(200).json(result);
 };
@@ -94,7 +95,6 @@ export const deleteCharacter = (
     const deleted =
         CharacterService.delete(
             req.params.id
-
         );
 
     if (!deleted) {
