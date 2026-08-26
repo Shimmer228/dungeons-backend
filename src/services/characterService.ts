@@ -5,7 +5,7 @@ import type {CharacterFilters} from "../dto/filters.js";
 
 export class CharacterService {
 
-    static getAll(filters: CharacterFilters) {
+    static getAll(filters: CharacterFilters):Character[] {
             const result = characters.filter((character) => {
 
                 if (
@@ -79,7 +79,7 @@ export class CharacterService {
         }
 
 
-    static findById(id: string) {
+    static findById(id: string):Character|undefined {
         return characters.find(
             character => character.id === id
         );
@@ -98,7 +98,7 @@ export class CharacterService {
         return newCharacter;
     }
 
-    static delete(id: string) {
+    static delete(id: string):boolean {
         const index = characters.findIndex(
             character => character.id === id
         );
@@ -115,7 +115,7 @@ export class CharacterService {
     static update(
         id: string,
         updates: Partial<Omit<Character, "id">>
-    ) {
+    ):Character|null {
         const character = this.findById(id);
 
         if (!character) {

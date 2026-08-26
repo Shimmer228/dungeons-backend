@@ -1,8 +1,5 @@
-export type CharacterFilters = {
-    name?: string;
-    race?: string;
-    class?: string;
-    level?: number;
-    hp?: number;
-    sort?:string;
-};
+import {CharacterFiltersSchema} from "./characterFiltersSchema.js";
+import {z} from "zod";
+
+export type CharacterFilters =
+    z.infer<typeof CharacterFiltersSchema>;

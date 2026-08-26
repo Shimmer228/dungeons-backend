@@ -6,6 +6,8 @@ import type {
 import { CharacterService } from "../services/characterService.js";
 import { UpdateCharacterSchema } from "../schemas/characterSchema.js";
 import { CharacterSchema } from "../schemas/characterSchema.js";
+import {safeParse} from "zod";
+import {CharacterFiltersSchema} from "../dto/characterFiltersSchema.js";
 
 type CharacterParams = {
     id: string;
@@ -15,34 +17,15 @@ export const getCharacters = (
     req: Request,
     res: Response
 ) => {
-    const {
-        class: characterClass,
-        race,
-        level,
-        sort
-    } = req.query;
+    const validationResult = CharacterFiltersSchema.safeParse(req.query);
 
-    const parsedLevel =
-        level !== undefined
-            ? Number(level)
-            : undefined;
-    if(parsedLevel !==undefined && Number.isNaN(parsedLevel)) return res.status(400).json({"message":"level must be a number"});
-    const result = CharacterService.getAll({
-            class: characterClass
-                ? String(characterClass)
-                : undefined,
-
-            race:race
-            ? String(race)
-            : undefined,
-
-        level: parsedLevel,
-
-        sort: sort
-            ? String(sort)
-            : undefined
-
-});
+    if (!validationResult.success) {
+        return res.status(400).json({
+            message: "Invalid query parameters",
+            errors: validationResult.error.flatten()
+        });
+    }
+    const result = CharacterService.getAll(validationResult.data);
 
     return res.status(200).json(result);
 };
