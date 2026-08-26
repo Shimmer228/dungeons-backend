@@ -6,6 +6,8 @@ import type {
 import { CharacterService } from "../services/characterService.js";
 import { UpdateCharacterSchema } from "../schemas/characterSchema.js";
 import { CharacterSchema } from "../schemas/characterSchema.js";
+import {safeParse} from "zod";
+import {CharacterFiltersSchema} from "../dto/characterFiltersSchema.js";
 
 type CharacterParams = {
     id: string;
@@ -15,33 +17,15 @@ export const getCharacters = (
     req: Request,
     res: Response
 ) => {
-    const {
-        class: characterClass,
-        race,
-        level,
-        sort
-    } = req.query;
+    const validationResult = CharacterFiltersSchema.safeParse(req.query);
 
-    const parsedLevel =
-        level !== undefined
-            ? Number(level)
-            : undefined;
-
-    const result = CharacterService.getAll(
-        characterClass
-            ? String(characterClass)
-            : undefined,
-
-        race
-            ? String(race)
-            : undefined,
-
-        parsedLevel,
-
-        sort
-            ? String(sort)
-            : undefined
-    );
+    if (!validationResult.success) {
+        return res.status(400).json({
+            message: "Invalid query parameters",
+            errors: validationResult.error.flatten()
+        });
+    }
+    const result = CharacterService.getAll(validationResult.data);
 
     return res.status(200).json(result);
 };
@@ -94,7 +78,6 @@ export const deleteCharacter = (
     const deleted =
         CharacterService.delete(
             req.params.id
-
         );
 
     if (!deleted) {

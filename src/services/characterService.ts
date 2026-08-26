@@ -1,34 +1,30 @@
 import { randomUUID } from "crypto";
 import {characters} from "../data/characters.js";
 import type { Character } from "../models/character.js";
+import type {CharacterFilters} from "../dto/filters.js";
 
 export class CharacterService {
 
-    static getAll(
-            characterClass?: string,
-            race?: string,
-            level?: number,
-            sort?: string
-        ) {
+    static getAll(filters: CharacterFilters):Character[] {
             const result = characters.filter((character) => {
 
                 if (
-                    characterClass &&
-                    character.class !== characterClass
+                    filters.class &&
+                    character.class !== filters.class
+                ) {
+                    return false;
+                }
+                console.log(filters);
+                if (
+                    filters.race &&
+                    character.race !== filters.race
                 ) {
                     return false;
                 }
 
                 if (
-                    race &&
-                    character.race !== race
-                ) {
-                    return false;
-                }
-
-                if (
-                    level !== undefined &&
-                    character.level !== level
+                    filters.level !== undefined &&
+                    character.level !== filters.level
                 ) {
                     return false;
                 }
@@ -36,11 +32,11 @@ export class CharacterService {
                 return true;
             });
 
-            if (sort) {
-                const isDesc = sort.startsWith("-");
+            if (filters.sort) {
+                const isDesc = filters.sort.startsWith("-");
                 const field = isDesc
-                    ? sort.slice(1)
-                    : sort;
+                    ? filters.sort.slice(1)
+                    : filters.sort;
 
                 const validFields: (keyof Character)[] = [
                     "name",
@@ -83,7 +79,7 @@ export class CharacterService {
         }
 
 
-    static findById(id: string) {
+    static findById(id: string):Character|undefined {
         return characters.find(
             character => character.id === id
         );
@@ -102,7 +98,7 @@ export class CharacterService {
         return newCharacter;
     }
 
-    static delete(id: string) {
+    static delete(id: string):boolean {
         const index = characters.findIndex(
             character => character.id === id
         );
@@ -119,7 +115,7 @@ export class CharacterService {
     static update(
         id: string,
         updates: Partial<Omit<Character, "id">>
-    ) {
+    ):Character|null {
         const character = this.findById(id);
 
         if (!character) {
