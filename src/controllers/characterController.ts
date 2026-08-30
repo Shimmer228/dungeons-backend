@@ -6,7 +6,6 @@ import type {
 import { CharacterService } from "../services/characterService.js";
 import { UpdateCharacterSchema } from "../schemas/characterSchema.js";
 import { CharacterSchema } from "../schemas/characterSchema.js";
-import {safeParse} from "zod";
 import {CharacterFiltersSchema} from "../dto/characterFiltersSchema.js";
 
 type CharacterParams = {
@@ -115,4 +114,12 @@ export const updateCharacter = (
     }
 
     return res.json(updatedCharacter);
+};
+export const damageCharacter = (
+    req: Request<CharacterParams>,
+    res: Response
+) => {
+    if(req.body.damage <=0) return res.status(400).json({message:"invalid damage"})
+    const result = CharacterService.damage(req.params.id, req.body.damage);
+    return result ? res.status(200).json(result) : res.sendStatus(404);
 };

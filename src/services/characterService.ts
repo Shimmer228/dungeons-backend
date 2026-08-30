@@ -3,6 +3,7 @@ import {characters} from "../data/characters.js";
 import type { Character } from "../models/character.js";
 import type {CharacterFilters} from "../dto/filters.js";
 
+
 export class CharacterService {
 
     static getAll(filters: CharacterFilters):Character[] {
@@ -125,5 +126,14 @@ export class CharacterService {
         Object.assign(character, updates);
 
         return character;
+    }
+
+    static damage(id: string, damage: number): Character | null {
+        const character = this.findById(id);
+        if (!character) {
+            return null;
+        }
+        const newHp = Math.max(0, character.hp - damage);
+        return this.update(id, { hp: newHp });
     }
 }
