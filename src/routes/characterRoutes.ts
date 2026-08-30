@@ -1,5 +1,12 @@
 import { Router } from "express";
-import { getCharacters, getOneCharacter, createCharacter, deleteCharacter, updateCharacter } from "../controllers/characterController.js";
+import {
+    getCharacters,
+    getOneCharacter,
+    createCharacter,
+    deleteCharacter,
+    updateCharacter,
+    damageCharacter
+} from "../controllers/characterController.js";
 
 const router = Router();
 
@@ -8,4 +15,5 @@ router.get("/:id", getOneCharacter);
 router.post("/", createCharacter);
 router.delete("/:id", deleteCharacter);
 router.patch("/:id", updateCharacter)
+router.patch("/damage/:id", damageCharacter)
 export default router;

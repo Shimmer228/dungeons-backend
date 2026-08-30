@@ -4,4 +4,5 @@ export const CharacterFiltersSchema = z.object({
     class: z.string().optional(),
     level: z.coerce.number().optional(),
     sort: z.string().optional()
+
 });
