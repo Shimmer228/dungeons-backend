@@ -1,12 +1,14 @@
 import { randomUUID } from "crypto";
-import {characters} from "../data/characters.js";
+// import {characters} from "../data/characters.js";
 import type { Character } from "../models/character.js";
 import type {CharacterFilters} from "../dto/filters.js";
+import {CharacterRepository} from "../repositories/characterRepository.js";
 
 
 export class CharacterService {
 
-    static getAll(filters: CharacterFilters):Character[] {
+    static async getAll(filters: CharacterFilters): Promise<Character[]> {
+            const characters = await CharacterRepository.getAll();
             const result = characters.filter((character) => {
 
                 if (
@@ -15,7 +17,7 @@ export class CharacterService {
                 ) {
                     return false;
                 }
-                console.log(filters);
+                console.log(character);
                 if (
                     filters.race &&
                     character.race !== filters.race
@@ -75,31 +77,41 @@ export class CharacterService {
                     });
                 }
             }
-
+        console.log(result);
             return result;
         }
 
 
-    static findById(id: string):Character|undefined {
+    static async findById(id: string):Promise<Character|undefined> {
+        const characters = await CharacterRepository.getAll();
         return characters.find(
             character => character.id === id
         );
     }
 
-    static create(
-        data: Omit<Character, "id">
-    ) {
-        const newCharacter: Character = {
-            id: randomUUID(),
-            ...data,
-        };
+    public static async saveAll(characters: Character[]): Promise<void> {
+        await CharacterRepository.saveAll(characters);
+    }
+
+    static async create(
+        newCharacter: Character
+    ):Promise<Character|undefined> {
+        const characters = await CharacterRepository.getAll();
+        console.log(characters);
+        if (!newCharacter.id) {
+            newCharacter.id = randomUUID();
+        }
+        if (characters.some(c => c.id === newCharacter.id)) {
+            throw new Error(`Character with ID ${newCharacter.id} already exists.`);
+        }
 
         characters.push(newCharacter);
-
+        await CharacterRepository.saveAll(characters);
         return newCharacter;
     }
 
-    static delete(id: string):boolean {
+    static async delete(id: string):Promise<boolean> {
+        const characters = await CharacterRepository.getAll();
         const index = characters.findIndex(
             character => character.id === id
         );
@@ -113,11 +125,11 @@ export class CharacterService {
         return true;
     }
 
-    static update(
+    static async update(
         id: string,
         updates: Partial<Omit<Character, "id">>
-    ):Character|null {
-        const character = this.findById(id);
+    ):Promise<Character|null> {
+        const character = await this.findById(id);
 
         if (!character) {
             return null;
@@ -128,8 +140,8 @@ export class CharacterService {
         return character;
     }
 
-    static damage(id: string, damage: number): Character | null {
-        const character = this.findById(id);
+    static async damage(id: string, damage: number): Promise<Character | null> {
+        const character = await this.findById(id);
         if (!character) {
             return null;
         }

@@ -12,21 +12,28 @@ type CharacterParams = {
     id: string;
 };
 
-export const getCharacters = (
+export const getCharacters = async (
     req: Request,
     res: Response
 ) => {
-    const validationResult = CharacterFiltersSchema.safeParse(req.query);
+    try {
+        const validationResult = CharacterFiltersSchema.safeParse(req.query);
 
-    if (!validationResult.success) {
-        return res.status(400).json({
-            message: "Invalid query parameters",
-            errors: validationResult.error.flatten()
+        if (!validationResult.success) {
+            return res.status(400).json({
+                message: "Invalid query parameters",
+                errors: validationResult.error.flatten()
+            });
+        }
+        const result = await CharacterService.getAll(validationResult.data);
+
+        return res.status(200).json(result);
+    }catch (error){
+        console.error("Error retrieving characters:", error);
+        return res.status(500).json({
+            message: "Internal server error"
         });
     }
-    const result = CharacterService.getAll(validationResult.data);
-
-    return res.status(200).json(result);
 };
 
 
