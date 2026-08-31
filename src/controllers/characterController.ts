@@ -12,21 +12,28 @@ type CharacterParams = {
     id: string;
 };
 
-export const getCharacters = (
+export const getCharacters = async (
     req: Request,
     res: Response
 ) => {
-    const validationResult = CharacterFiltersSchema.safeParse(req.query);
+    try {
+        const validationResult = CharacterFiltersSchema.safeParse(req.query);
 
-    if (!validationResult.success) {
-        return res.status(400).json({
-            message: "Invalid query parameters",
-            errors: validationResult.error.flatten()
+        if (!validationResult.success) {
+            return res.status(400).json({
+                message: "Invalid query parameters",
+                errors: validationResult.error.flatten()
+            });
+        }
+        const result = await CharacterService.getAll(validationResult.data);
+
+        return res.status(200).json(result);
+    }catch (error){
+        console.error("Error retrieving characters:", error);
+        return res.status(500).json({
+            message: "Internal server error"
         });
     }
-    const result = CharacterService.getAll(validationResult.data);
-
-    return res.status(200).json(result);
 };
 
 
@@ -47,7 +54,7 @@ export const getOneCharacter = (
 };
 
 
-export const createCharacter = (
+export const createCharacter = async (
     req: Request,
     res: Response
 ) => {
@@ -62,7 +69,7 @@ export const createCharacter = (
     }
 
     const character =
-        CharacterService.create(
+        await CharacterService.create(
             validation.data
         );
 
@@ -70,12 +77,12 @@ export const createCharacter = (
 };
 
 
-export const deleteCharacter = (
+export const deleteCharacter = async (
     req: Request<CharacterParams>,
     res: Response
 ) => {
     const deleted =
-        CharacterService.delete(
+        await CharacterService.delete(
             req.params.id
         );
 
@@ -87,7 +94,7 @@ export const deleteCharacter = (
 };
 
 
-export const updateCharacter = (
+export const updateCharacter = async (
     req: Request<CharacterParams>,
     res: Response
 ) => {
@@ -103,7 +110,7 @@ export const updateCharacter = (
         });
     }
 
-    const updatedCharacter =
+    const updatedCharacter = await
         CharacterService.update(
             req.params.id,
             validation.data
@@ -115,11 +122,11 @@ export const updateCharacter = (
 
     return res.json(updatedCharacter);
 };
-export const damageCharacter = (
+export const damageCharacter = async (
     req: Request<CharacterParams>,
     res: Response
 ) => {
     if(req.body.damage <=0) return res.status(400).json({message:"invalid damage"})
-    const result = CharacterService.damage(req.params.id, req.body.damage);
+    const result = await CharacterService.damage(req.params.id, req.body.damage);
     return result ? res.status(200).json(result) : res.sendStatus(404);
 };
