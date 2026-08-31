@@ -6,6 +6,7 @@ export const CharacterSchema = z.object({
         class: z.string(),
         level: z.number(),
         hp: z.number(),
+        maxHp:z.number(),
 });
 
 export const UpdateCharacterSchema =

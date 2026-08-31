@@ -130,27 +130,21 @@ export class CharacterService {
         id: string,
         updates: Partial<Omit<Character, "id">>
     ):Promise<Character|null> {
-        const characters = await CharacterRepository.getAll();
-        const character = this.findInArray(characters, id);
 
-        if (!character) {
-            return null;
-        }
-
-        Object.assign(character, updates);
-
-        await CharacterRepository.saveAll(characters)
+        const character = await CharacterRepository.update(id, updates);
         console.log(character);
         return character;
     }
 
-    static async damage(id: string, damage: number): Promise<Character | null> {
+    static async changeHP(id: string, amount: number): Promise<Character | null> {
+        console.log(id, amount);
         const characters = await CharacterRepository.getAll();
         const character = this.findInArray(characters, id);
         if(!character) {
             return null;
         }
-        const newHp = Math.max(0, character.hp - damage);
+        const newHp = amount<0 ? Math.max(0, character.hp + amount) : Math.min(character.maxHp, character.hp+amount);
         return this.update(id, { hp: newHp });
     }
+
 }

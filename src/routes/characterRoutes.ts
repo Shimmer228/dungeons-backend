@@ -5,7 +5,7 @@ import {
     createCharacter,
     deleteCharacter,
     updateCharacter,
-    damageCharacter
+    changeHpOfCharacter
 } from "../controllers/characterController.js";
 
 const router = Router();
@@ -15,5 +15,5 @@ router.get("/:id", getOneCharacter);
 router.post("/", createCharacter);
 router.delete("/:id", deleteCharacter);
 router.patch("/:id", updateCharacter)
-router.patch("/damage/:id", damageCharacter)
+router.patch("/damage/:id", changeHpOfCharacter)
 export default router;

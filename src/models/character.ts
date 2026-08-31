@@ -5,4 +5,5 @@ export type Character = {
   class: string;
   level: number;
   hp: number;
+  maxHp:number;
 };

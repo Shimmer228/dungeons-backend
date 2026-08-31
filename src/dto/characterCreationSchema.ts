@@ -9,4 +9,5 @@ export const CharacterCreationSchema = CharacterFiltersSchema
     id: z.string(),
     name: z.string(),
     hp: z.number(),
+    maxHp:z.number(),
 }).required();
