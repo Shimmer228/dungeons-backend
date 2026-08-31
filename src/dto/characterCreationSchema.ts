@@ -6,6 +6,7 @@ export const CharacterCreationSchema = CharacterFiltersSchema
     sort:true,
 })
 .extend({
+    id: z.string(),
     name: z.string(),
     hp: z.number(),
 }).required();

@@ -1,51 +1,50 @@
 [
   {
-    "name": "Alucard",
     "race": "Eladrin",
     "class": "Warlock",
     "level": 4,
+    "id": "1",
+    "name": "Alucard",
     "hp": 49
   },
   {
-    "name": "Serafim",
     "race": "Human",
     "class": "Monk",
     "level": 3,
+    "id": "2",
+    "name": "Serafim",
     "hp": 37
   },
   {
-    "name": "Lucian fon Reimar",
     "race": "Human",
     "class": "Bard",
     "level": 3,
+    "id": "3",
+    "name": "Lucian fon Reimar",
     "hp": 29
   },
   {
-    "name": "Sir Avrelian",
     "race": "Harengon",
     "class": "Paladin",
     "level": 5,
+    "id": "4",
+    "name": "Sir Avrelian",
     "hp": 56
   },
   {
-    "name": "Yoren",
     "race": "Human",
     "class": "Paladin",
     "level": 5,
+    "id": "5",
+    "name": "Yoren",
     "hp": 56
   },
   {
+    "race": "Human",
+    "class": "Fighter",
+    "level": 8,
+    "id": "6",
     "name": "Geraltt",
-    "race": "Human",
-    "class": "Fighter",
-    "level": 8,
-    "hp": 74
-  },
-  {
-    "name": "Geralt",
-    "race": "Human",
-    "class": "Fighter",
-    "level": 8,
     "hp": 74
   }
 ]

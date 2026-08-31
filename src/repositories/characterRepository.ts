@@ -5,6 +5,7 @@ import {
 } from "fs/promises";
 import {CharacterSchema} from "../schemas/characterSchema.js";
 import {z} from "zod";
+import {CharacterCreationSchema} from "../dto/characterCreationSchema.js";
 
 export class CharacterRepository {
     private static filePath = './src/data/characters.json';
@@ -22,7 +23,7 @@ export class CharacterRepository {
     }
     public static async saveAll(characters: Character[]): Promise<void> {
         try {
-            const validatedData = z.array(CharacterSchema).parse(characters);
+            const validatedData = z.array(CharacterCreationSchema).parse(characters);
             const jsonData = JSON.stringify(validatedData, null, 2);
             await writeFile(this.filePath, jsonData, 'utf-8');
         } catch (error) {

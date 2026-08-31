@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import type { Character } from "../models/character.js";
 import type {CharacterFilters} from "../dto/filters.js";
 import {CharacterRepository} from "../repositories/characterRepository.js";
-
+import { CharacterSchema } from "../schemas/characterSchema.js";
 
 export class CharacterService {
 
@@ -88,18 +88,19 @@ export class CharacterService {
             character => character.id === id
         );
     }
-
-    public static async saveAll(characters: Character[]): Promise<void> {
-        await CharacterRepository.saveAll(characters);
+    private static findInArray(characters: Character[], id: string): Character | undefined {
+        return characters.find(character => character.id === id);
     }
 
+
     static async create(
-        newCharacter: Character
+        newCharacterData: Omit<Character, "id">
     ):Promise<Character|undefined> {
         const characters = await CharacterRepository.getAll();
-        console.log(characters);
-        if (!newCharacter.id) {
-            newCharacter.id = randomUUID();
+
+        const newCharacter : Character = {
+            ...newCharacterData,
+            id:randomUUID(),
         }
         if (characters.some(c => c.id === newCharacter.id)) {
             throw new Error(`Character with ID ${newCharacter.id} already exists.`);
@@ -121,7 +122,7 @@ export class CharacterService {
         }
 
         characters.splice(index, 1);
-
+        await CharacterRepository.saveAll(characters);
         return true;
     }
 
@@ -129,7 +130,8 @@ export class CharacterService {
         id: string,
         updates: Partial<Omit<Character, "id">>
     ):Promise<Character|null> {
-        const character = await this.findById(id);
+        const characters = await CharacterRepository.getAll();
+        const character = this.findInArray(characters, id);
 
         if (!character) {
             return null;
@@ -137,12 +139,15 @@ export class CharacterService {
 
         Object.assign(character, updates);
 
+        await CharacterRepository.saveAll(characters)
+        console.log(character);
         return character;
     }
 
     static async damage(id: string, damage: number): Promise<Character | null> {
-        const character = await this.findById(id);
-        if (!character) {
+        const characters = await CharacterRepository.getAll();
+        const character = this.findInArray(characters, id);
+        if(!character) {
             return null;
         }
         const newHp = Math.max(0, character.hp - damage);
