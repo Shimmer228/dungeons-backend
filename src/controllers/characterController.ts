@@ -7,6 +7,7 @@ import { CharacterService } from "../services/characterService.js";
 import { UpdateCharacterSchema } from "../schemas/characterSchema.js";
 import { CharacterSchema } from "../schemas/characterSchema.js";
 import {CharacterFiltersSchema} from "../dto/characterFiltersSchema.js";
+import {HpChangeSchema} from "../dto/characterHpChangeSchema.js";
 
 type CharacterParams = {
     id: string;
@@ -122,11 +123,18 @@ export const updateCharacter = async (
 
     return res.json(updatedCharacter);
 };
-export const damageCharacter = async (
+export const changeHpOfCharacter = async (
     req: Request<CharacterParams>,
     res: Response
 ) => {
-    if(req.body.damage <=0) return res.status(400).json({message:"invalid damage"})
-    const result = await CharacterService.damage(req.params.id, req.body.damage);
-    return result ? res.status(200).json(result) : res.sendStatus(404);
+    try {
+        const validation = HpChangeSchema.safeParse(req.body);
+
+        if (!validation.success) return res.status(400).json({message: "invalid amount"})
+        const result = await CharacterService.changeHP(req.params.id, Number(req.body.amount));
+        return result ? res.status(200).json(result) : res.sendStatus(404);
+    }catch(error){
+        console.error("Error while changing hp:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 };

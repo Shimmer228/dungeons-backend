@@ -21,6 +21,11 @@ export class CharacterRepository {
             throw error;
         }
     }
+    public static async findById(id:string):Promise<Character|undefined>{
+
+            const characters = await this.getAll();
+            return characters.find((c) => c.id === id);
+    }
     public static async saveAll(characters: Character[]): Promise<void> {
         try {
             const validatedData = z.array(CharacterCreationSchema).parse(characters);
@@ -31,4 +36,28 @@ export class CharacterRepository {
             throw error;
         }
     }
+        public static async update(
+            id: string,
+            updates: Partial<Omit<Character, "id">>
+    ): Promise<Character | null>{
+            const characters =
+                await this.getAll();
+
+            const index =
+                characters.findIndex(
+                    c => c.id === id
+                );
+            if (index === -1) {
+                return null;
+            }
+            const updatedCharacter = {
+                ...characters[index],
+                ...updates
+            };
+            characters[index] =
+                updatedCharacter;
+            await this.saveAll(characters);
+            return updatedCharacter;
+        }
+
 }
