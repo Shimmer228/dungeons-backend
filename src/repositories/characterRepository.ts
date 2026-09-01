@@ -59,5 +59,37 @@ export class CharacterRepository {
             await this.saveAll(characters);
             return updatedCharacter;
         }
-
+    public static async create(
+     character: Character
+    ): Promise<Character>
+    {
+        try {
+            const characters = await this.getAll();
+            characters.push(character);
+            await this.saveAll(characters);
+            return character;
+        }catch (error) {
+            console.error('Failed to create character:', error);
+            throw error;
+        }
+    }
+    public static async delete(
+        id: string
+    ): Promise<boolean>{
+        try {
+            const characters = await this.getAll();
+            const index = characters.findIndex(
+                character => character.id === id
+            );
+            if (index === -1) {
+                return false;
+            }
+            characters.splice(index, 1);
+            await this.saveAll(characters);
+            return true;
+        }catch (error){
+            console.error('Failed to create character:', error);
+            throw error;
+        }
+    }
 }

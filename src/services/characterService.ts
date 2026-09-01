@@ -96,34 +96,17 @@ export class CharacterService {
     static async create(
         newCharacterData: Omit<Character, "id">
     ):Promise<Character|undefined> {
-        const characters = await CharacterRepository.getAll();
 
         const newCharacter : Character = {
             ...newCharacterData,
             id:randomUUID(),
         }
-        if (characters.some(c => c.id === newCharacter.id)) {
-            throw new Error(`Character with ID ${newCharacter.id} already exists.`);
-        }
-
-        characters.push(newCharacter);
-        await CharacterRepository.saveAll(characters);
-        return newCharacter;
+        return await CharacterRepository.create(newCharacter);
     }
 
     static async delete(id: string):Promise<boolean> {
-        const characters = await CharacterRepository.getAll();
-        const index = characters.findIndex(
-            character => character.id === id
-        );
 
-        if (index === -1) {
-            return false;
-        }
-
-        characters.splice(index, 1);
-        await CharacterRepository.saveAll(characters);
-        return true;
+        return await CharacterRepository.delete(id);
     }
 
     static async update(
