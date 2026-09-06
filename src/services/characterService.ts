@@ -120,14 +120,10 @@ export class CharacterService {
     }
 
     static async changeHP(id: string, amount: number): Promise<Character | null> {
-        console.log(id, amount);
-        const characters = await CharacterRepository.getAll();
-        const character = this.findInArray(characters, id);
-        if(!character) {
-            return null;
-        }
+        const character = await CharacterRepository.findById(id);
+        if(!character) return null;
         const newHp = amount<0 ? Math.max(0, character.hp + amount) : Math.min(character.maxHp, character.hp+amount);
-        return this.update(id, { hp: newHp });
+        return await CharacterRepository.update(id, { hp: newHp });
     }
 
 }

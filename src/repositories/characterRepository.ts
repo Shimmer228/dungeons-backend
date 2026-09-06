@@ -92,4 +92,5 @@ export class CharacterRepository {
             throw error;
         }
     }
+
 }

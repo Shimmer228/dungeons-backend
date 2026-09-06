@@ -1,0 +1,11 @@
+// use prisma-next
+
+model Character {
+  id       String @id
+  name     String
+  race  String
+  level      Int
+  class     String
+  hp        Int
+  maxHp     Int
+}

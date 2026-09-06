@@ -28,3 +28,5 @@ prisma/dev.db-journal
 # Uploads (якщо є локальні)
 public/uploads
 uploads/
+node_modules/
+dist/
