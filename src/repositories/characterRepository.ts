@@ -6,25 +6,29 @@ import {
 import {CharacterSchema} from "../schemas/characterSchema.js";
 import {z} from "zod";
 import {CharacterCreationSchema} from "../dto/characterCreationSchema.js";
+import { db } from '../prisma/db.js';
 
 export class CharacterRepository {
     private static filePath = './src/data/characters.json';
 
-    public static async getAll(): Promise<Character[]> {
-        try {
 
-            const data = await readFile(this.filePath, 'utf-8');
-            const characters: Character[] = JSON.parse(data);
-            return characters;
+public static async getAll(): Promise<Character[]> {
+    try {
+        return await db.orm.public.Character.all();
+    } catch (error) {
+        console.error('Failed to load characters from database:', error);
+        throw error;
+    }
+}
+    public static async findById(id: string): Promise<Character | null> {
+        try {
+            return await db.orm.public.Character
+                .where({ id })
+                .first();
         } catch (error) {
-            console.error('Failed to load characters:', error);
+            console.error(`Failed to find character with id ${id}:`, error);
             throw error;
         }
-    }
-    public static async findById(id:string):Promise<Character|undefined>{
-
-            const characters = await this.getAll();
-            return characters.find((c) => c.id === id);
     }
     public static async saveAll(characters: Character[]): Promise<void> {
         try {
@@ -60,15 +64,13 @@ export class CharacterRepository {
             return updatedCharacter;
         }
     public static async create(
-     character: Character
-    ): Promise<Character>
-    {
+        characterData: z.infer<typeof CharacterCreationSchema>
+    ): Promise<Character> {
         try {
-            const characters = await this.getAll();
-            characters.push(character);
-            await this.saveAll(characters);
-            return character;
-        }catch (error) {
+            const validatedData = CharacterCreationSchema.parse(characterData);
+
+            return await db.orm.public.Character.create(validatedData);
+        } catch (error) {
             console.error('Failed to create character:', error);
             throw error;
         }
