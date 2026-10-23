@@ -1,9 +1,8 @@
 import { randomUUID } from "crypto";
-// import {characters} from "../data/characters.js";
 import type { Character } from "../models/character.js";
 import type {CharacterFilters} from "../dto/filters.js";
 import {CharacterRepository} from "../repositories/characterRepository.js";
-import { CharacterSchema } from "../schemas/characterSchema.js";
+
 
 export class CharacterService {
 
@@ -87,9 +86,6 @@ export class CharacterService {
         return characters.find(
             character => character.id === id
         );
-    }
-    private static findInArray(characters: Character[], id: string): Character | undefined {
-        return characters.find(character => character.id === id);
     }
 
 
